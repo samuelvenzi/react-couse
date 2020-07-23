@@ -5,9 +5,9 @@ import Person from './Person/Person'
 class App extends Component {
   state = {
     persons: [
-      { name: "Samuel", age: "23" },
-      { name: "Fernanda", age: "23" },
-      { name: "Pedro", age: "18" },
+      { id: "1", name: "Samuel", age: "23" },
+      { id: "2", name: "Fernanda", age: "23" },
+      { id: "3", name: "Pedro", age: "18" },
     ]
   }
 
@@ -24,29 +24,45 @@ class App extends Component {
 
   togglePersonsHandler = () => {
     const doesShow = this.state.show
-    this.setState({show: !doesShow}) 
+    this.setState({ show: !doesShow })
   }
 
+  deletePersonHandler = (personIndex) => {
+    // const persons = this.state.persons.slice()
+    const persons = [...this.state.persons]
+    persons.splice(personIndex, 1)
+    this.setState({persons: persons})
+  }
+
+
   render() {
+
+    let persons = null
+
+    if (this.state.show) {
+      persons = (
+        <div>
+          {
+            this.state.persons.map((person, index) => {
+              return (
+                <Person
+                  clicked={() => this.deletePersonHandler(index)}
+                  name={person.name}
+                  age={person.age} 
+                  key={person.id} />
+              )
+            })
+          }
+        </div>
+      )
+    }
+
     return (
       <div className="App">
         <h1>Hi, I'm a React App.</h1>
         <h1>One more</h1>
         <button onClick={this.togglePersonsHandler}>Toggle</button>
-        {
-          this.state.show ?
-            <div>
-              <Person
-                name={this.state.persons[0].name}
-                age={this.state.persons[0].age} />
-              <Person
-                name={this.state.persons[1].name}
-                age={this.state.persons[1].age} />
-              <Person
-                name={this.state.persons[2].name}
-                age={this.state.persons[2].age} />
-            </div> : null
-        }
+        {persons}
       </div>
     );
   }
